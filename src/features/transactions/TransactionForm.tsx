@@ -10,6 +10,8 @@ interface TransactionFormProps {
   categories: Category[]
   /** 正在编辑的记录；null 表示新记一笔 */
   editing: Transaction | null
+  /** 新记时的默认日期（跟随列表页当前筛选的月份），不传则用今天 */
+  defaultDate?: string
   onSave: (data: NewTransaction) => void
   onDelete?: () => void
 }
@@ -20,11 +22,11 @@ const typeTabs: { value: TransactionType; label: string; activeClass: string }[]
 ]
 
 /** 记账表单：新记 / 编辑共用。字段顺序按操作频率排：金额 > 类型 > 分类 > 日期 > 备注 */
-export function TransactionForm({ categories, editing, onSave, onDelete }: TransactionFormProps) {
+export function TransactionForm({ categories, editing, defaultDate, onSave, onDelete }: TransactionFormProps) {
   const [type, setType] = useState<TransactionType>('expense')
   const [amount, setAmount] = useState('')
   const [category, setCategory] = useState('')
-  const [date, setDate] = useState(todayStr())
+  const [date, setDate] = useState(defaultDate ?? todayStr())
   const [note, setNote] = useState('')
   const [error, setError] = useState('')
 
@@ -40,11 +42,11 @@ export function TransactionForm({ categories, editing, onSave, onDelete }: Trans
       setType('expense')
       setAmount('')
       setCategory(categories.find((c) => c.type === 'expense')?.name ?? '')
-      setDate(todayStr())
+      setDate(defaultDate ?? todayStr())
       setNote('')
     }
     setError('')
-    // categories 只在初始化时需要，不参与重置
+    // categories / defaultDate 只在初始化时需要，不参与重置
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editing])
 

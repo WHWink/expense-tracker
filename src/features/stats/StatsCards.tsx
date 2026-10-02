@@ -1,11 +1,12 @@
-import type { Totals } from '../../hooks/useTransactions'
+import type { Totals } from '../../utils/stats'
 import { formatAmount, formatBalance } from '../../utils/format'
 
 interface StatsCardsProps {
   totals: Totals
 }
 
-/** 顶部统计卡片：当前结余 + 总收入 + 总支出（正数绿、负数红） */
+/** 顶部统计卡片：当前结余 + 总收入 + 总支出（正数绿、负数红）；
+ *  第二阶段起数字跟随列表页的筛选条件。 */
 export function StatsCards({ totals }: StatsCardsProps) {
   const { income, expense, balance } = totals
   return (

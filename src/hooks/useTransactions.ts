@@ -1,13 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { NewTransaction, Transaction } from '../types/transaction'
 import { createTransaction, loadTransactions, saveTransactions } from '../store/transactions'
-import { round2 } from '../utils/format'
-
-export interface Totals {
-  income: number
-  expense: number
-  balance: number
-}
+import { computeTotals } from '../utils/stats'
 
 /** 记账业务逻辑：增删改、排序、汇总。UI 组件只负责展示，不写逻辑 */
 export function useTransactions() {
@@ -27,17 +21,7 @@ export function useTransactions() {
     [transactions],
   )
 
-  const totals = useMemo<Totals>(() => {
-    let income = 0
-    let expense = 0
-    for (const t of transactions) {
-      if (t.type === 'income') income += t.amount
-      else expense += t.amount
-    }
-    income = round2(income)
-    expense = round2(expense)
-    return { income, expense, balance: round2(income - expense) }
-  }, [transactions])
+  const totals = useMemo(() => computeTotals(transactions), [transactions])
 
   function addTransaction(data: NewTransaction) {
     setTransactions((prev) => [createTransaction(data), ...prev])
