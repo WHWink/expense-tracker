@@ -28,7 +28,7 @@ React 19 · TypeScript · Vite · Tailwind CSS v4 · papaparse · SheetJS · jsP
 ## 快速开始
 
 ```bash
-git clone https://github.com/<你的用户名>/expense-tracker.git
+git clone https://github.com/WHWink/expense-tracker.git
 cd expense-tracker
 npm install
 npm run dev
