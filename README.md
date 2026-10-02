@@ -52,6 +52,10 @@ npm run dev -- --host
 纯静态 SPA：`npm run build` 后把 `dist/` 目录扔到任意静态托管即可，
 Vercel / Netlify / Cloudflare Pages / GitHub Pages 都可以，无需任何服务端配置。
 
+本仓库自带 GitHub Pages 自动部署（`.github/workflows/deploy.yml`）：
+在仓库 Settings → Pages 把 Source 设为 **GitHub Actions** 后，
+推送到 main 即自动发布到 `https://<用户名>.github.io/expense-tracker/`。
+
 ## 目录结构
 
 ```

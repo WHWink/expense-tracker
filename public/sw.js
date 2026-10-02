@@ -5,9 +5,20 @@
  *   保证首次打开后即可完全离线
  * - 页面导航：网络优先，失败时回退缓存 —— 在线时总能拿到新版本
  * - 其他本站资源（含导出功能的按需分包）：缓存优先
- * 修改本文件时把 CACHE 里的版本号 +1，旧缓存会在 activate 时自动清理 */
-const CACHE = 'jizhang-v3'
-const CORE = ['/', '/index.html', '/manifest.webmanifest', '/icon.svg', '/icons/icon-192.png', '/icons/icon-512.png']
+ * 修改本文件时把 CACHE 里的版本号 +1，旧缓存会在 activate 时自动清理。
+ * 所有路径基于 registration.scope 计算，部署在子路径（如 GitHub Pages 的
+ * /expense-tracker/）时自动适配。 */
+const CACHE = 'jizhang-v4'
+const SCOPE = new URL(self.registration.scope).pathname
+
+const CORE = [
+  SCOPE,
+  SCOPE + 'index.html',
+  SCOPE + 'manifest.webmanifest',
+  SCOPE + 'icon.svg',
+  SCOPE + 'icons/icon-192.png',
+  SCOPE + 'icons/icon-512.png',
+]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -15,8 +26,10 @@ self.addEventListener('install', (event) => {
       const cache = await caches.open(CACHE)
       await cache.addAll(CORE)
       // index.html 引用的带哈希资源（js/css）是离线运行的必需品，这里解析出来预缓存
-      const html = await (await fetch('/index.html')).text()
-      const assetUrls = [...new Set(html.match(/\/assets\/[^"'\s<>)]+?\.(?:js|css)/g) ?? [])]
+      const html = await (await fetch(SCOPE + 'index.html')).text()
+      const assetUrls = [...new Set(html.match(/assets\/[^"'\s<>)]+?\.(?:js|css)/g) ?? [])].map(
+        (p) => SCOPE + p,
+      )
       await Promise.allSettled(assetUrls.map((url) => cache.add(url)))
       await self.skipWaiting()
     })(),
@@ -49,7 +62,7 @@ self.addEventListener('fetch', (event) => {
         .catch(() =>
           caches
             .match(req, { ignoreVary: true })
-            .then((cached) => cached || caches.match('/index.html', { ignoreVary: true })),
+            .then((cached) => cached || caches.match(SCOPE + 'index.html', { ignoreVary: true })),
         ),
     )
     return

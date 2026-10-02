@@ -12,8 +12,10 @@ createRoot(document.getElementById('root')!).render(
 // 仅生产环境注册 Service Worker（让浏览器识别为可安装的 PWA）
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-      // 非 HTTPS 等场景注册失败不影响正常使用
-    })
+    navigator.serviceWorker
+      .register(import.meta.env.BASE_URL + 'sw.js')
+      .catch(() => {
+        // 非 HTTPS 等场景注册失败不影响正常使用
+      })
   })
 }
