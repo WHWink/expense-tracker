@@ -8,6 +8,7 @@
 - [x] 第一阶段：记一笔 / 记录列表（删改）/ 结余统计
 - [x] 第二阶段：按月/类型/分类筛选 + 分类管理 + 底部导航
 - [x] 第三阶段：导出 CSV / Excel / PDF（全部 / 当前筛选 / 自定义时间范围）
+- [x] 附加：PWA 离线缓存（首次打开后断网也能用）
 
 ## 本地运行
 
@@ -31,8 +32,15 @@ npm run dev -- --host
 
 ```bash
 npm run build
-npm run preview   # 本地预览构建产物（含 Service Worker）
+npm run preview   # 本地预览构建产物（含 Service Worker，可测离线）
 ```
+
+## PWA 离线
+
+生产构建（`npm run build`）后的页面首次打开时，Service Worker 会把应用文件全部缓存；
+之后断网、电脑关机，手机上照样能打开和记账（数据在浏览器 localStorage 里）。
+在线打开时页面走「网络优先」，发新版本后用户联网打开一次即自动更新。
+开发模式（`npm run dev`）不注册 Service Worker，避免热更新被缓存干扰。
 
 ## 目录结构
 
