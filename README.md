@@ -1,46 +1,56 @@
 # 简易记账（expense-tracker）
 
-个人单机记账 H5：React + TypeScript + Vite + Tailwind CSS。
-数据全部存在浏览器 localStorage，无后端、无登录，支持添加到手机主屏幕全屏使用。
+一个只为你自己服务的单机记账 H5：**无后端、无登录、无追踪**，数据全部存在浏览器
+localStorage 里。手机浏览器「添加到主屏幕」后就是一个全屏记账 App，首次打开后
+断网也能用。
 
-## 功能进度
+| 明细 | 导出 |
+| --- | --- |
+| ![明细页](docs/screenshot-home.png) | ![导出](docs/screenshot-export.png) |
 
-- [x] 第一阶段：记一笔 / 记录列表（删改）/ 结余统计
-- [x] 第二阶段：按月/类型/分类筛选 + 分类管理 + 底部导航
-- [x] 第三阶段：导出 CSV / Excel / PDF（全部 / 当前筛选 / 自定义时间范围）
-- [x] 附加：PWA 离线缓存（首次打开后断网也能用）
+## 功能
 
-## 本地运行
+- **记一笔**：金额（自动调起数字键盘）、收入/支出、分类（18 个预设 + 自定义增删）、日期、备注
+- **记录列表**：时间倒序，点行编辑、点垃圾桶删除
+- **统计卡片**：当前结余 / 总收入 / 总支出，正数绿、负数红，跟随筛选条件联动
+- **筛选**：按月份、按收支类型、按分类，三个条件任意组合
+- **分类管理**：预设餐饮、交通、工资等常用分类，支持增删（删除不影响已有记录）
+- **导出账单**：
+  - 格式：CSV（UTF-8 带 BOM，Excel 打开不乱码）/ Excel .xlsx / PDF（表格 + 汇总）
+  - 范围：全部 / 当前筛选结果 / 自定义时间区间
+  - 金额约定为收入正、支出负，拿到表格里可以直接求和
+- **PWA**：manifest + Service Worker 离线缓存，发新版联网打开一次即自动更新
+
+## 技术栈
+
+React 19 · TypeScript · Vite · Tailwind CSS v4 · papaparse · SheetJS · jsPDF
+
+## 快速开始
 
 ```bash
+git clone https://github.com/<你的用户名>/expense-tracker.git
+cd expense-tracker
 npm install
 npm run dev
 ```
 
-## 在手机上测试
+## 在手机上使用
+
+方式一（本地）：
 
 ```bash
 npm run dev -- --host
 ```
 
-手机连同一个 Wi-Fi，用浏览器打开终端里显示的 Network 地址（形如 `http://192.168.x.x:5173`）。
-在浏览器菜单里选「添加到主屏幕」即可全屏使用。
+手机连同一个 Wi-Fi，浏览器打开终端里的 Network 地址。
 
-注意：数据存在浏览器 localStorage 里，同一台手机浏览器上的数据才互通。
+方式二（推荐）：部署到任意静态托管（见下文），得到一个 https 地址，
+手机打开一次 → 浏览器菜单「添加到主屏幕」→ 从桌面图标全屏使用。
 
-## 构建
+## 部署
 
-```bash
-npm run build
-npm run preview   # 本地预览构建产物（含 Service Worker，可测离线）
-```
-
-## PWA 离线
-
-生产构建（`npm run build`）后的页面首次打开时，Service Worker 会把应用文件全部缓存；
-之后断网、电脑关机，手机上照样能打开和记账（数据在浏览器 localStorage 里）。
-在线打开时页面走「网络优先」，发新版本后用户联网打开一次即自动更新。
-开发模式（`npm run dev`）不注册 Service Worker，避免热更新被缓存干扰。
+纯静态 SPA：`npm run build` 后把 `dist/` 目录扔到任意静态托管即可，
+Vercel / Netlify / Cloudflare Pages / GitHub Pages 都可以，无需任何服务端配置。
 
 ## 目录结构
 
@@ -60,10 +70,6 @@ src/
 scripts/          make-icons.ps1 重新生成 PWA 图标
 ```
 
-## 导出说明
+## License
 
-- 入口在明细页右上角「导出」，默认选「当前筛选结果」，与筛选栏联动
-- CSV：UTF-8 带 BOM（Excel 打开不乱码），papaparse 负责转义
-- Excel：SheetJS 生成，金额是数字类型（收入正 / 支出负），可直接求和
-- PDF：jsPDF 生成，表格 + 汇总；中文用系统字体绘制，文字不可选中（后续可换字体嵌入方案）
-- xlsx / jspdf 体积较大，已按格式分包，点导出时才加载
+[MIT](LICENSE)
